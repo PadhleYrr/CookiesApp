@@ -5,6 +5,9 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,7 +16,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Need full history to count commits
+          fetch-depth: 0
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -21,7 +24,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # Count total commits = build number
       - name: Get build number from commit count
         id: buildnum
         run: |
@@ -29,28 +31,17 @@ jobs:
           echo "BUILD_NUMBER=$BUILD" >> $GITHUB_ENV
           echo "Build number: $BUILD"
 
-      # Patch app_name in strings.xml → "1 Cookie Browser", "2 Cookie Browser" …
       - name: Patch app name and package with build number
         run: |
           B=$BUILD_NUMBER
-
-          # 1. strings.xml — app label
           sed -i "s|<string name=\"app_name\">.*</string>|<string name=\"app_name\">${B} Cookie Browser</string>|" \
             app/src/main/res/values/strings.xml
-
-          # 2. build.gradle — unique applicationId + versionCode/Name
-          sed -i "s|applicationId \"com.cookiegrabber.app\"|applicationId \"com.cookiegrabber.app${B}\"|" \
+          sed -i "s|applicationId \"com.cookiegrabber.app[0-9]*\"|applicationId \"com.cookiegrabber.app${B}\"|" \
             app/build.gradle
           sed -i "s|versionCode [0-9]*|versionCode ${B}|" \
             app/build.gradle
           sed -i "s|versionName \"[^\"]*\"|versionName \"${B}.0\"|" \
             app/build.gradle
-
-          echo "--- Patched strings.xml ---"
-          cat app/src/main/res/values/strings.xml
-          echo "--- Patched build.gradle ---"
-          grep -E "applicationId|versionCode|versionName|app_name" \
-            app/build.gradle app/src/main/res/values/strings.xml
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -66,7 +57,7 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleDebug --no-daemon --stacktrace
 
-      - name: Rename APK with build number
+      - name: Rename APK
         run: |
           mv app/build/outputs/apk/debug/app-debug.apk \
              app/build/outputs/apk/debug/CookieBrowser-v${BUILD_NUMBER}.apk
@@ -78,12 +69,12 @@ jobs:
           path: app/build/outputs/apk/debug/CookieBrowser-v${{ env.BUILD_NUMBER }}.apk
           retention-days: 30
 
-      - name: Auto-create GitHub Release for every build
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.BUILD_NUMBER }}
           name: "${{ env.BUILD_NUMBER }} Cookie Browser"
-          body: "Build #${{ env.BUILD_NUMBER }} — auto release from commit ${{ github.sha }}"
+          body: "Build #${{ env.BUILD_NUMBER }} — commit ${{ github.sha }}"
           files: app/build/outputs/apk/debug/CookieBrowser-v${{ env.BUILD_NUMBER }}.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
