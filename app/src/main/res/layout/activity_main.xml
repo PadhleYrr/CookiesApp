@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#0a0a0a">
+
+    <!-- TOP BAR -->
+    <LinearLayout
+        android:id="@+id/topbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:background="#111111"
+        android:padding="8dp"
+        android:gravity="center_vertical">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_bg"
+            android:src="@drawable/ic_back"
+            android:contentDescription="Back"
+            android:scaleType="center" />
+
+        <ImageButton
+            android:id="@+id/btn_forward"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_bg"
+            android:src="@drawable/ic_forward"
+            android:contentDescription="Forward"
+            android:scaleType="center"
+            android:layout_marginStart="4dp" />
+
+        <EditText
+            android:id="@+id/url_input"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/url_bar_bg"
+            android:textColor="#e8e8e8"
+            android:textColorHint="#555555"
+            android:hint="Search or type URL"
+            android:inputType="textUri"
+            android:imeOptions="actionGo"
+            android:singleLine="true"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="13sp"
+            android:fontFamily="monospace" />
+
+        <ImageButton
+            android:id="@+id/btn_reload"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_bg"
+            android:src="@drawable/ic_reload"
+            android:contentDescription="Reload"
+            android:scaleType="center" />
+
+    </LinearLayout>
+
+    <!-- PROGRESS BAR -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:progressTint="#00ff88"
+        android:progressBackgroundTint="#222222"
+        android:visibility="gone"
+        android:max="100" />
+
+    <!-- WEBVIEW -->
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- BOTTOM BAR -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:background="#111111"
+        android:gravity="center"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cookies"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="🍪 Get Cookies"
+            android:textColor="#000000"
+            android:backgroundTint="#00ff88"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif-medium"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            app:cornerRadius="20dp"
+            xmlns:app="http://schemas.android.com/apk/res-auto" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_home"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="⌂"
+            android:textColor="#e8e8e8"
+            android:backgroundTint="#222222"
+            android:textSize="18sp"
+            android:padding="0dp"
+            app:cornerRadius="12dp"
+            xmlns:app="http://schemas.android.com/apk/res-auto" />
+
+    </LinearLayout>
+
+</LinearLayout>
